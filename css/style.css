@@ -1,0 +1,145 @@
+input {
+    border: 1px green dotted;
+}
+input[type=radio][checked] {
+    border: 1px yellow double;
+
+}
+.a_google:hover {
+    color: yellow !important;
+}
+form {
+    border: 1px red solid;
+    float :left;
+    width: 50%;
+    color:black;
+
+}
+#new_window {
+    border: 1px darkgray solid;
+    float :left;
+    width : 50%;
+}
+main section div {
+    float: left;
+    width: 24%;
+}
+main section div img {
+    width: 80%;
+    height: 150px;
+}
+main section {
+    width: 100%;
+}
+footer ul {
+    margin: auto;
+}
+footer ul li {
+    text-align: center;
+    width: 30%;
+    display: inline;
+
+}
+nav ul li {
+    display: inline;
+    text-align: left;
+    font-size: 18;
+}
+div:hover img {
+    border: #ff3a44 double 1px;
+}
+iframe {
+    width: 98%;
+    min-height: 230px;
+
+}
+form {
+    width: 99%;
+}
+form textarea {
+    width: 99%;
+    height: 50px;
+
+}
+header img {
+    width: 25%;
+    float:left;
+    margin: 3px;
+}
+header nav ul li {
+    float: left;
+    margin-left: 25px;
+
+}
+header nav ul:hover li a {
+    color: red;
+}
+.section_header {
+    text-align: justify;
+}
+main > a > img {
+    float: left;
+    margin: 1px;
+    margin-right: 15px;
+}
+main {
+    text-align: justify;
+    padding-bottom: 150px;
+}
+
+footer {
+    position: fixed;
+    bottom: 5px;
+    text-align: right;
+    background-color: beige;
+    width: 99%;
+}
+
+table.wikitable {
+    margin: 1em 0;
+    background-color: #f9f9f9;
+    border: 1px solid #aaa;
+    border-collapse: collapse;
+    color: #000
+}
+
+table.wikitable > tr > th, table.wikitable > tr > td, table.wikitable > * > tr > th,
+table.wikitable > * > tr > td {
+    border: 1px solid #aaa;
+    padding: 0.2em 0.4em
+}
+
+table.wikitable > tr > th, table.wikitable > * > tr > th {
+    background-color: #f2f2f2;
+    text-align: center
+}
+
+#histoty {
+    text-align: justify;
+    text-indent: 2%;
+}
+#histoty:first-letter {
+    font-style: oblique;
+    color: red;
+}
+#histoty:first-line {
+    padding: 10px;
+}
+/*#histoty span {*/
+/*content: ' ';*/
+/*display: table;*/
+/*}*/
+#histoty:after {
+    content: ' ';
+    clear: both;
+}
+img[alt='History'] {
+    border: groove 1px greenyellow;
+}
+form.add-comment {
+    min-height: 250px;
+}
+form.add-comment  textarea {
+    width: 98%;
+}
+
