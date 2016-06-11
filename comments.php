@@ -70,11 +70,11 @@ function GetColor($symbol) {
 HOBBY
 ,
      ),
-     'Ivan'   => array( 'age' => 22, 'emploument' => false, 'hobby' => 'пиво семечки'),
-     'Marie'  => array( 'age' => 18, 'emploument' => true, 'salary' => 5000, 'symbol' => 'Э'),
-     'Ruslan' => array( 'age' => 49, 'emploument' => true, 'salary' => 450),
-     'Olena'  => array( 'age' => 17, 'emploument' => true, 'salary' => 12000),
-     'Didus'  => array( 'age' => 72, 'emploument' => false, )
+     'Ivan'   => array( 'age' => 22, 'emploument' => false, 'hobby' => 'пиво семечки', 'expirience' => 10,),
+     'Marie'  => array( 'age' => 18, 'emploument' => true, 'salary' => 5000, 'symbol' => 'Э', 'expirience' => 11,),
+     'Ruslan' => array( 'age' => 49, 'emploument' => true, 'salary' => 450, 'expirience' => 15,),
+     'Olena'  => array( 'age' => 17, 'emploument' => true, 'salary' => 12000, 'expirience' => 8,'hobby' => 'мальчики',),
+     'Didus'  => array( 'age' => 72, 'emploument' => false, 'expirience' => 12, 'hobby' => 'вино и сыр',)
  );
 
  $titles = array(
@@ -88,7 +88,7 @@ HOBBY
  );
 
  $ageSum = 0;
- $sumEmpl = true;
+ $sumEmpl = "";
 ?>
 <table border="1 solid">
     <thead>
@@ -126,9 +126,11 @@ HOBBY
 
      echo '</tr>';
 
-     $ageSum += $arrValues['age'];
-     $sumEmpl = $arrValues['emploument'] || $sumEmpl;
-
+     $ageSum += $arrValues['expirience'];
+     $sumEmpl = $sumEmpl . $arrValues['hobby'] . " ";
+//     foreach ($arrValues['hobby'] as $hobby=> $hobbyValue) {
+//         $sumEmpl = $hobbyValue . " ";
+//     }
  }
 
 ?>
@@ -142,5 +144,6 @@ HOBBY
 </table>
 <div>
     <p>Это  учебный пример вывода из скрипта</p>
+    <span><?= $sumEmpl ?> </span> <br>
     <span><?= $ageSum ?> </span>
 </div>
