@@ -12,21 +12,47 @@ function GetStringEmploument($emploument)
     return $emploument ? 'работает' : 'свободен';
 }
 
-function GetRealValue($arrValues, $field)
+function GetRealValue($arrValues, $field, $color)
 {
     if ( !isset($arrValues[$field]) )
-        return '-';
+        return '<span style="color:red">-</span>';
 
     switch ($field) {
         case 'emploument':
-            return GetStringEmploument($arrValues[$field]);
+            $text = GetStringEmploument($arrValues[$field]);
+            $param= $arrValues[$field];
+            break;
         case 'salary':
-            return (isset($arrValues['symbol']) ? $arrValues['symbol'] : 'UAH '). $arrValues[$field];
+            $param =  isset($arrValues['symbol']) ?  $arrValues['symbol'] : 'UAH ';
+            $text  =  $param . $arrValues[$field];
+            break;
         case 'age':
-            return $arrValues[$field] . ' лет';
+            $param = $arrValues[$field];
+            $text  = $arrValues[$field] . ' лет';
+            break;
         default:
             return $arrValues[$field];
     }
+
+    return $color ? '<span style="color:' . $color($param) . '">' . $text . '</span>' : $text;
+}
+
+function GetColorEmp($emploument)
+{
+
+    return $emploument ? 'green' : 'red';
+
+}
+
+function GetColorAge($age) {
+
+    return $age < 18 ? 'green' : ($age < 40 ? 'blue' : ($age < 60 ? 'black' : 'red'));
+
+}
+
+function GetColor($symbol) {
+
+    return $symbol == '$' ? 'green' : ($symbol == 'Э' ? 'blue' : 'black');
 }
  const USER_RIGHT = 'right of fine live';
 
@@ -48,13 +74,14 @@ HOBBY
      'Marie'  => array( 'age' => 18, 'emploument' => true, 'salary' => 5000, 'symbol' => 'Э'),
      'Ruslan' => array( 'age' => 49, 'emploument' => true, 'salary' => 450),
      'Olena'  => array( 'age' => 17, 'emploument' => true, 'salary' => 12000),
+     'Didus'  => array( 'age' => 72, 'emploument' => false, )
  );
 
  $titles = array(
-     'Name' => 'key',
-     'Age'  => 'age',
-     'Emploument' => 'emploument',
-     'Salary'     => 'salary',
+     'Name' => array( 'field' => 'key', 'align' => 'left', ),
+     'Age'  => array( 'field' => 'age', 'color' => 'GetColorAge' ),
+     'Emploument' => array( 'field' => 'emploument', 'color' => 'GetColorEmp', ),
+     'Salary'     => array( 'field' => 'salary', 'align' => 'right', 'color' => 'GetColor'),
      'Expirience' => 'expirience',
      'Hobby'      => 'hobby',
      'Prof'       => 'prof'
@@ -79,9 +106,22 @@ HOBBY
  {
    echo '<tr>';
 
-     foreach ($titles as $title => $field)
+     foreach ($titles as $title => $value)
      {
-        echo '<td>' . <?=( $title == 'Name' ? $key : GetRealValue($arrValues, $field ) ) . '</td>';
+         $color = '';
+
+         if (is_array($value)) {
+            $field = $value['field'];
+            $align = isset($value['align']) ? $value['align'] : 'center';
+            if (isset($value['color']))
+                $color = $value['color'];
+        }
+        else {
+            $field = $value;
+            $align = 'center';
+        }
+
+        echo "<td align='$align'>" . ( $title == 'Name' ? $key : GetRealValue($arrValues, $field, $color ) ) . '</td>';
      }
 
      echo '</tr>';
