@@ -6,6 +6,20 @@
  * Time: 13:27
  */
 
+function writeProf() {
+    global $arrProf;
+
+  return 'Все профессии : ' . implode( ', ', $arrProf);
+
+}
+
+function writeHobbyes() {
+    global $arrHobbyes;
+
+    return 'Все хобби : ' . implode( ', ', $arrHobbyes);
+
+}
+
 function GetStringEmploument($emploument)
 {
 
@@ -63,6 +77,7 @@ function GetColor($symbol) {
                         'salary' => 120,
                         'symbol' => '$',
                         'expirience' => 5,
+                        'prof'       => 'developer;sysadmin;tester',
                         'hobby' => <<<HOBBY
 рыбалка
 охота
@@ -70,11 +85,37 @@ function GetColor($symbol) {
 HOBBY
 ,
      ),
-     'Ivan'   => array( 'age' => 22, 'emploument' => false, 'hobby' => 'пиво семечки'),
-     'Marie'  => array( 'age' => 18, 'emploument' => true, 'salary' => 5000, 'symbol' => 'Э'),
-     'Ruslan' => array( 'age' => 49, 'emploument' => true, 'salary' => 450),
-     'Olena'  => array( 'age' => 17, 'emploument' => true, 'salary' => 12000),
-     'Didus'  => array( 'age' => 72, 'emploument' => false, )
+     'Ivan'   => array( 'age' => 22, 'emploument' => false, 'hobby' => 'пиво
+семечки', ),
+     'Marie'  => array( 'age' => 18, 'emploument' => true, 'salary' => 5000, 'symbol' => 'Э',                         'hobby' => <<<HOBBY
+кафе
+горные лыжи
+велопутешествия
+HOBBY
+     ,
+     ),
+     'Ruslan' => array( 'age' => 49, 'emploument' => true, 'salary' => 450,  'prof' => 'developer;teacher',                         'hobby' => <<<HOBBY
+туризм
+охота
+велопутешествия
+HOBBY
+     ,
+     ),
+     'Olena'  => array( 'age' => 17, 'emploument' => true, 'salary' => 12000, 'prof' => 'finagent;student',                         'hobby' => <<<HOBBY
+вышивание
+рок-концерты
+автостоп
+HOBBY
+     ,
+     ),
+     'Didus'  => array( 'age' => 72, 'emploument' => false,                         'hobby' => <<<HOBBY
+рыбалка
+охота
+семечки
+пиво
+HOBBY
+     ,
+     )
  );
 
  $titles = array(
@@ -89,6 +130,10 @@ HOBBY
 
  $ageSum = 0;
  $sumEmpl = true;
+
+$arrProf = array();
+$arrHobbyes = array();
+$arrNames = array();
 ?>
 <table border="1 solid">
     <thead>
@@ -105,6 +150,8 @@ HOBBY
  foreach ( $names as $key => $arrValues )
  {
    echo '<tr>';
+
+     $arrNames[] = $key;
 
      foreach ($titles as $title => $value)
      {
@@ -128,6 +175,15 @@ HOBBY
 
      $ageSum += $arrValues['age'];
      $sumEmpl = $arrValues['emploument'] || $sumEmpl;
+     if (isset($arrValues['prof']) ) {
+         $arrTemp = explode(';', $arrValues['prof']);
+         $arrProf = array_merge($arrProf, $arrTemp);
+     }
+
+     if (isset($arrValues['hobby']) ) {
+         $arrTemp = explode( PHP_EOL, $arrValues['hobby']);
+         $arrHobbyes = array_unique( array_merge($arrHobbyes, $arrTemp) );
+     }
 
  }
 
@@ -141,6 +197,7 @@ HOBBY
     </tfoot>
 </table>
 <div>
-    <p>Это  учебный пример вывода из скрипта</p>
-    <span><?= $ageSum ?> </span>
+    <p><?=writeProf()?></p>
+    <p><?=writeHobbyes()?></p>
+    <span><?=var_dump( $arrNames) ?> </span>
 </div>
