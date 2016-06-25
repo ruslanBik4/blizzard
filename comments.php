@@ -54,7 +54,12 @@ function GetRealValue($arrValues, $field, $color)
 function GetColorEmp($emploument)
 {
 
-    return $emploument ? 'green' : 'red';
+    if ($emploument) {
+        return 'green';
+        echo 1;
+    }
+    else
+        return 'red';
 
 }
 
@@ -199,5 +204,5 @@ $arrNames = array();
 <div>
     <p><?=writeProf()?></p>
     <p><?=writeHobbyes()?></p>
-    <span><?=var_dump( $arrNames) ?> </span>
+    <span><?=var_dump( $_GET) ?> </span>
 </div>
