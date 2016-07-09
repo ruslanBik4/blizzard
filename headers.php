@@ -9,6 +9,7 @@ function isUser() {
 
     if (
         !isset($_SERVER['PHP_AUTH_USER'])
+        || !isset($psw[ $_SERVER['PHP_AUTH_USER'] ])
         || ($psw[ $_SERVER['PHP_AUTH_USER'] ] != $_SERVER['PHP_AUTH_PW'])
     )
         return false;
@@ -37,13 +38,3 @@ iF ( !isUser() )
     exit(-1);
 }
 
-
-header('Content-Type: text/html; charset=utf-8');
-
-echo "Hello, ". $_SERVER['PHP_AUTH_USER'] . '<br> значение в куках = ' . ( $_COOKIE['userName'] ? : 'нет') . '<br>';
-
-foreach($_SERVER as $key => $value)
-    echo "$key = $value <br>";
-?>
-
-<span>Проверка кодировки - новый текст</span>
