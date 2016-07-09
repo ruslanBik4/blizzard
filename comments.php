@@ -5,6 +5,7 @@
  * Date: 04.06.16
  * Time: 13:27
  */
+include_once 'headers.php';
 
 function writeProf() {
     global $arrProf;
