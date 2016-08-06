@@ -20,8 +20,15 @@
 
  $conn = mysqli_connect($host, $user, $password, $database);
 
- $sql  = 'SELECT o.officeCode as office_id, COUNT(w.employeeNumber) as worker_count 
-FROM offices o JOIN employees w using(officeCode) GROUP BY 1';
+ $sql  = "select  concat(e.firstname, ' ', e.lastname) as 'Работник',
+		CONCAT_WS(', ', cus.country, IFNULL(cus.state, ''), cus.addressLine1, IFNULL(cus.addressLine2,'hide from corruption'), 
+		        cus.postalCode) as 'Адрес клиента',
+		CONCAT_WS(' ', cus.contactfirstname, cus.contactlastname ) as 'Клиент', 
+		count(*) as 'Всего заказов', min(orderDate) as 'Дата первого заказа', max(orderDate) as'Сумма'
+from employees e join offices o using(officeCode) join customers cus on(e.employeeNumber = cus.salesRepEmployeeNumber) 
+        join orders OS using(CustomerNumber)
+group by 1
+order by creditLimit desc";
 
 if ( !( $result = mysqli_query( $conn, $sql ) ) ) {
 
