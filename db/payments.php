@@ -17,24 +17,38 @@ try {
     $view = new viewPayments($conn);
 } catch (Exception $e) {
     echo $e->getMessage();
-}  catch (ExceptionDB $e) {
-    echo $e->getMessage();
-}  catch (ExceptionINternet $e) {
-    echo $e->getMessage();
 }
-$view->setSql( "select e.lastName as 'worker', customerName, count(orderNumber), (orderDate), avg(priceEach) as 'avgPrice', 
+$view->setSql( "select concat(e.firstname, ' ', e.lastname) as 'worker', customerName, count(orderNumber), (orderDate), avg(priceEach) as 'avgPrice', 
 GROUP_CONCAT(productName SEPARATOR ', ') as 'Product',  
 GROUP_CONCAT(textDescription SEPARATOR ', ') as 'Product_Line'
 from employees e join customers cus on(e.employeeNumber = cus.salesRepEmployeeNumber) join orders OS using(CustomerNumber) 
 join orderdetails OD using(orderNumber) join products p using(productCode) join productlines using(productLine)
 where MONTH(orderDate) =12
 group by worker, customerName
-order by orderDate, avgPrice desc" );
+order by 1, orderDate, avgPrice desc" );
+
+  $view->setExclude( ['Product', 'Product_Line']);
 
   $view->runSQL();
-  echo $view->PrintTable( ['Product', 'Product_Line']);
+
+ echo $view->getHeadTable() . $view->PrintTable(10);
 
 
+    $view1 = new viewPayments($conn);
+
+  $view1->setSql( "select  concat(e.firstname, ' ', e.lastname) as 'Emplouyes',
+		CONCAT_WS(', ', cus.country, IFNULL(cus.state, ''), cus.addressLine1, IFNULL(cus.addressLine2,'hide from corruption'), cus.postalCode) as 'AddressCustomers' ,
+		CONCAT_WS(' ', cus.contactfirstname, cus.contactlastname ) as 'ClientName', count(*), min(orderDate), max(orderDate)
+from employees e join offices o using(officeCode) join customers cus on(e.employeeNumber = cus.salesRepEmployeeNumber) join orders OS using(CustomerNumber)
+group by Emplouyes
+order by 1, creditLimit desc");
+    
+    $view1->setExclude([]);
+    
+    $view1->runSQL();
+    
+    echo $view1->getHeadTable() . $view1->PrintTable(10);
+    
 
 
- mysqli_close($conn);
+mysqli_close($conn);

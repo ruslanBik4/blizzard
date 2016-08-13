@@ -19,7 +19,8 @@ class viewPayments
     private $sql;
     private $conn;
     private $result;
-    private $row;
+    private $row = [];
+    private $exclude = [];
 
     public function __construct($conn)
     {
@@ -62,13 +63,13 @@ class viewPayments
         }
     }
 
-    public function getHeadTable(array $exclude)
+    public function getHeadTable( )
     {
 
         $text =  viewPayments::TABLE_HEAD . viewPayments::TABLE_ROW;
 
         foreach ($this->row as $key => $value){
-            if (in_array($key, $exclude)) {
+            if (in_array($key, $this->exclude)) {
                 continue;
             }
             $text .= viewPayments::TABLE_CELL . $key . viewPayments::END_CELL;
@@ -79,16 +80,17 @@ class viewPayments
 
     }
 
-    public function PrintTable(array $exclude)
+    public function PrintTable($countRows)
     {
         $text = '';
+        $count = 0;
 
         do  {
             $text .= viewPayments::TABLE_ROW;
 
              foreach ($this->row as $key => $value) {
 
-                 if (in_array($key, $exclude)) {
+                 if (in_array($key, $this->exclude)) {
                      continue;
                  }
                  $text .= viewPayments::TABLE_CELL . $value . viewPayments::END_CELL;
@@ -97,12 +99,21 @@ class viewPayments
 
             $text .= viewPayments::END_ROW . PHP_EOL;
 
-         }  while ($this->row=mysqli_fetch_assoc($this->result));
+         }  while ( ($this->row=mysqli_fetch_assoc($this->result))
+                    && (++$count < $countRows) );
 
 
         $text .= viewPayments::TABLE_END;
 
         return $text;
+    }
+
+    /**
+     * @param array $exclude
+     */
+    public function setExclude(array $exclude)
+    {
+        $this->exclude = $exclude;
     }
 
 }
