@@ -22,18 +22,17 @@ try {
 }  catch (ExceptionINternet $e) {
     echo $e->getMessage();
 }
-$view->setSql( "SELECT customerName , max(o2.orderDate), max(o1.orderDate) as DateEnd, 
- period_diff(date_format(o1.orderDate, '%y%m'), date_format(o2.orderDate,'%y%m' )) as diff
- FROM orders o1 join orders o2 using (customerNumber) join customers using (customerNumber)
-WHERE o1.orderDate > o2.orderDate and  
-period_diff(date_format(o1.orderDate, '%y%m'), date_format(o2.orderDate,'%y%m' )) > 3
- and not EXISTS (select * FROM orders o3 
- WHERE o3.customerNumber = o1.customerNumber and 
- o3.orderDate > o2.orderDate and o3.orderDate < o1.orderDate )
- group by 1
-order by 1" );
+$view->setSql( "select e.lastName as 'worker', customerName, count(orderNumber), (orderDate), avg(priceEach) as 'avgPrice', 
+GROUP_CONCAT(productName SEPARATOR ', ') as 'Product',  
+GROUP_CONCAT(textDescription SEPARATOR ', ') as 'Product_Line'
+from employees e join customers cus on(e.employeeNumber = cus.salesRepEmployeeNumber) join orders OS using(CustomerNumber) 
+join orderdetails OD using(orderNumber) join products p using(productCode) join productlines using(productLine)
+where MONTH(orderDate) =12
+group by worker, customerName
+order by orderDate, avgPrice desc" );
 
-  echo $view->PrintTable();
+  $view->runSQL();
+  echo $view->PrintTable( ['Product', 'Product_Line']);
 
 
 
