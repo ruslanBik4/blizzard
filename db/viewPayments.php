@@ -19,10 +19,11 @@ class viewPayments
     private $sql;
     private $conn;
     private $result;
+    private $offset;
     private $row = [];
     private $exclude = [];
 
-    public function __construct($conn)
+    public function __construct($conn, $offset = 0)
     {
 
          if (!isset($conn)) {
@@ -30,6 +31,13 @@ class viewPayments
          }
 
         $this->conn = $conn;
+
+        $this->offset = $offset;
+    }
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+//        $this->setExclude( [] );
     }
 
     /**
@@ -54,6 +62,10 @@ class viewPayments
 
     public function runSQL()
     {
+        if ($this->offset) {
+            $this->sql = $this->sql . " LIMIT " . (($this->offset-1) * 10) . ", 100" ;
+        }
+
         if (!($this->result = mysqli_query($this->conn, $this->sql))) {
             throw new Exception('SQL-query error - ' . mysqli_error($this->conn));
         };
