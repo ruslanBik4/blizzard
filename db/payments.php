@@ -18,6 +18,7 @@ include_once 'viewPayments.php';
     <input type="button" onclick="div4.style.display='block';" value = '4'/>
 <?php
 
+ echo viewPayments::$countObject;
  $conn = mysqli_connect($host, $user, $password, $database);
 
 try {
@@ -26,8 +27,8 @@ try {
 } catch (Exception $e) {
     echo $e->getMessage();
 }
-$view->setSql( "select  concat(e.firstname, ' ', e.lastname) as 'Emplouyes'
-from employees e" );
+$view->sql = ( "select  concat(e.firstname, ' ', e.lastname) as 'Emplouyes'
+from employees e order by 1" );
 
   $view->setExclude( ['Product', 'Product_Line']);
 
@@ -47,5 +48,5 @@ $view1 = clone $view;
     echo '<div id="div2" style="display:none">' .  $view1->getHeadTable() . $view1->PrintTable(10) . '</div>';
     
 
-
+ echo $view::$countObject . ', ' . $view1::$countObject ;
 mysqli_close($conn);

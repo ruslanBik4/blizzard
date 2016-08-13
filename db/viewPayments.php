@@ -23,6 +23,8 @@ class viewPayments
     private $row = [];
     private $exclude = [];
 
+    static public $countObject = 0;
+
     public function __construct($conn, $offset = 0)
     {
 
@@ -33,11 +35,27 @@ class viewPayments
         $this->conn = $conn;
 
         $this->offset = $offset;
+
+        self::$countObject ++;
     }
+
+    public function __set($name, $value)
+    {
+        // TODO: Implement __set() method.
+        switch ($name) {
+//            case 'sql':
+//                $this->sql = $value;
+//                break;
+            default:
+                $this->$name = $value;
+        }
+    }
+
     public function __clone()
     {
         // TODO: Implement __clone() method.
 //        $this->setExclude( [] );
+        self::$countObject ++;
     }
 
     /**
@@ -69,16 +87,17 @@ class viewPayments
         if (!($this->result = mysqli_query($this->conn, $this->sql))) {
             throw new Exception('SQL-query error - ' . mysqli_error($this->conn));
         };
-
-        if (!($this->row = mysqli_fetch_assoc($this->result))) {
-            throw new Exception('Not records from query !');
-        }
     }
 
     public function getHeadTable( )
     {
 
         $text =  viewPayments::TABLE_HEAD . viewPayments::TABLE_ROW;
+
+
+        if (!($this->row = mysqli_fetch_assoc($this->result))) {
+            throw new Exception('Not records from query !');
+        }
 
         foreach ($this->row as $key => $value){
             if (in_array($key, $this->exclude)) {
