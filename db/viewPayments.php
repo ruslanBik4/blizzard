@@ -18,6 +18,8 @@ class viewPayments
 
     private $sql;
     private $conn;
+    private $result;
+    private $row;
 
     public function __construct($conn)
     {
@@ -49,39 +51,58 @@ class viewPayments
         $this->sql = $sql;
     }
 
-    public function PrintTable()
+    public function runSQL()
     {
-        if ( !( $result = mysqli_query( $this->conn, $this->sql ) ) ) {
-
-            var_dump($result);
-            die( 'SQL-query error -  ' . mysqli_error($this->conn) );
+        if (!($this->result = mysqli_query($this->conn, $this->sql))) {
+            throw new Exception('SQL-query error - ' . mysqli_error($this->conn));
         };
 
-        if ( !($row=mysqli_fetch_assoc($result)) ) {
-            var_dump($result);
-            die( 'Not records from query !');
+        if (!($this->row = mysqli_fetch_assoc($this->result))) {
+            throw new Exception('Not records from query !');
         }
-
-        echo viewPayments::TABLE_HEAD . viewPayments::TABLE_ROW;
-
-        foreach ($row as $key => $value){
-            echo viewPayments::TABLE_CELL . $key . viewPayments::END_CELL;
-        }
-        echo viewPayments::END_ROW . viewPayments::END_HEAD;
-
-do  {
-    echo viewPayments::TABLE_ROW;
-
-     foreach ($row as $value)
-          echo viewPayments::TABLE_CELL . $value . viewPayments::END_CELL;
-
-     echo viewPayments::END_ROW . PHP_EOL;
-
- }  while ($row=mysqli_fetch_assoc($result));
-
-
- echo viewPayments::TABLE_END;
     }
 
+    public function getHeadTable(array $exclude)
+    {
+
+        $text =  viewPayments::TABLE_HEAD . viewPayments::TABLE_ROW;
+
+        foreach ($this->row as $key => $value){
+            if (in_array($key, $exclude)) {
+                continue;
+            }
+            $text .= viewPayments::TABLE_CELL . $key . viewPayments::END_CELL;
+        }
+        $text .=  viewPayments::END_ROW . viewPayments::END_HEAD;
+
+        return $text;
+
+    }
+
+    public function PrintTable(array $exclude)
+    {
+        $text = '';
+
+        do  {
+            $text .= viewPayments::TABLE_ROW;
+
+             foreach ($this->row as $key => $value) {
+
+                 if (in_array($key, $exclude)) {
+                     continue;
+                 }
+                 $text .= viewPayments::TABLE_CELL . $value . viewPayments::END_CELL;
+             }
+
+
+            $text .= viewPayments::END_ROW . PHP_EOL;
+
+         }  while ($this->row=mysqli_fetch_assoc($this->result));
+
+
+        $text .= viewPayments::TABLE_END;
+
+        return $text;
+    }
 
 }
