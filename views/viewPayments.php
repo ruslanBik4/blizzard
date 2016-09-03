@@ -17,23 +17,17 @@ class viewPayments
     const END_CELL  = '</td>';
 
     private $sql;
-    private $conn;
     private $result;
     private $offset;
     private $row = [];
     private $exclude = [];
 
     static public $countObject = 0;
+    private $conn;
 
-    public function __construct($conn, $offset = 0)
+    public function __construct($offset = 0)
     {
-
-         if (!isset($conn)) {
-             throw new Exception('Not connection!');
-         }
-
-        $this->conn = $conn;
-
+        $this->conn = DBConnection::getConnection();
         $this->offset = $offset;
 
         self::$countObject ++;
@@ -84,9 +78,7 @@ class viewPayments
             $this->sql = $this->sql . " LIMIT " . (($this->offset-1) * 10) . ", 100" ;
         }
 
-        if (!($this->result = mysqli_query($this->conn, $this->sql))) {
-            throw new Exception('SQL-query error - ' . mysqli_error($this->conn));
-        };
+        $this->result = $this->conn->runSQL($this->sql);
     }
 
     public function getHeadTable( )
@@ -94,10 +86,7 @@ class viewPayments
 
         $text =  viewPayments::TABLE_HEAD . viewPayments::TABLE_ROW;
 
-
-        if (!($this->row = mysqli_fetch_assoc($this->result))) {
-            throw new Exception('Not records from query !');
-        }
+        $this->row = $this->conn->getRecords($this->result);
 
         foreach ($this->row as $key => $value){
             if (in_array($key, $this->exclude)) {
@@ -130,7 +119,7 @@ class viewPayments
 
             $text .= viewPayments::END_ROW . PHP_EOL;
 
-         }  while ( ($this->row=mysqli_fetch_assoc($this->result))
+         }  while ( ($this->row=$this->conn->getRecords($this->result))
                     && (++$count < $countRows) );
 
 

@@ -7,8 +7,7 @@
  * то необходимо применить функцию YEAR, которая работает по принципу:
 */
 
-include_once 'secret.php';
-include_once 'viewPayments.php';
+include_once 'autoload.php';
 
 ?>
 
@@ -19,11 +18,10 @@ include_once 'viewPayments.php';
 <?php
 
  echo viewPayments::$countObject;
- $conn = mysqli_connect($host, $user, $password, $database);
 
 try {
 
-    $view = new viewPayments($conn, (isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0) );
+    $view = new viewPayments( (isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0) );
 } catch (Exception $e) {
     echo $e->getMessage();
 }
@@ -49,4 +47,3 @@ $view1 = clone $view;
     
 
  echo $view::$countObject . ', ' . $view1::$countObject ;
-mysqli_close($conn);
