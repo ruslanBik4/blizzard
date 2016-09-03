@@ -28,9 +28,17 @@ class DBConnection
         $this->conn = mysqli_connect(DBConfig::HOST, DBConfig::USER, DBConfig::PASSWORD, DBConfig::DATABASE);
 
     }
+    private function __wakeup()
+    {
+        // TODO: Implement __wakeup() method.
+    }
+    private function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     public function __destruct()
     {
-        // TODO: Implement __destruct() method.
         mysqli_close($this->conn);
     }
 
@@ -45,10 +53,6 @@ class DBConnection
     }
     public function getRecords($result)
     {
-        if (!($row = mysqli_fetch_assoc($result))) {
-            throw new Exception('Not records from query !');
-        }
-
-        return $row;
+        return mysqli_fetch_assoc($result);
     }
 }

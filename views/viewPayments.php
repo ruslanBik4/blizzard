@@ -88,11 +88,16 @@ class viewPayments
 
         $this->row = $this->conn->getRecords($this->result);
 
-        foreach ($this->row as $key => $value){
-            if (in_array($key, $this->exclude)) {
-                continue;
+        if ($this->row) {
+
+            foreach ($this->row as $key => $value){
+                if (in_array($key, $this->exclude)) {
+                    continue;
+                }
+                $text .= viewPayments::TABLE_CELL . $key . viewPayments::END_CELL;
             }
-            $text .= viewPayments::TABLE_CELL . $key . viewPayments::END_CELL;
+        } else {
+            $text .= 'Not record';
         }
         $text .=  viewPayments::END_ROW . viewPayments::END_HEAD;
 
@@ -102,10 +107,10 @@ class viewPayments
 
     public function PrintTable($countRows)
     {
-        $text = '';
+        $text = '<div id="div1">' . $this->getHeadTable();
         $count = 0;
 
-        do  {
+        while ( ($this->row) && ($count < $countRows) )  {
             $text .= viewPayments::TABLE_ROW;
 
              foreach ($this->row as $key => $value) {
@@ -116,14 +121,13 @@ class viewPayments
                  $text .= viewPayments::TABLE_CELL . $value . viewPayments::END_CELL;
              }
 
-
             $text .= viewPayments::END_ROW . PHP_EOL;
+            $this->row = $this->conn->getRecords($this->result);
+            $count++;
 
-         }  while ( ($this->row=$this->conn->getRecords($this->result))
-                    && (++$count < $countRows) );
+         }
 
-
-        $text .= viewPayments::TABLE_END;
+        $text .= viewPayments::TABLE_END  . '</div>';
 
         return $text;
     }

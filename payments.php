@@ -32,9 +32,9 @@ from employees e order by 1" );
 
   $view->runSQL();
 
-$view1 = clone $view;
+ $view1 = clone $view;
 
- echo '<div id="div1">' .  $view->getHeadTable() . $view->PrintTable(10) . '</div>';
+ echo $view->PrintTable(10);
 
 
 
