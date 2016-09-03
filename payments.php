@@ -9,19 +9,13 @@
 
 include_once 'autoload.php';
 
-?>
-
-    <input type="button" onclick="div1.style.display='block'; div2.style.display='none';" value = '1'/>
-    <input type="button" onclick="div2.style.display='block'; div1.style.display='none';" value = '2'/>
-    <a href="payments.php?offset=3"> 3</a>
-    <input type="button" onclick="div4.style.display='block';" value = '4'/>
-<?php
-
- echo viewPayments::$countObject;
+ $offset = isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0;
+ $navigator = new navigatorView($_REQUEST['offset']);
+ echo $navigator->drawNavigator();
 
 try {
 
-    $view = new viewPayments( (isset($_REQUEST['offset']) ? $_REQUEST['offset'] : 0) );
+    $view = new drawTableView( $offset );
 } catch (Exception $e) {
     echo $e->getMessage();
 }
@@ -32,18 +26,15 @@ from employees e order by 1" );
 
   $view->runSQL();
 
- $view1 = clone $view;
 
  echo $view->PrintTable(10);
 
+ $view1 = new drawTableView( $offset+1, 'style="display:none"' );
 
+$view1->sql = ( "select  concat(e.firstname, ' ', e.lastname) as 'Emplouyes'
+from employees e order by 1" );
 
-//    $view1->runSQL();
+ $view1->runSQL();
 
-//     $view1->setExclude( ['worker', 'customerName', 'count(orderNumber)',
-//     'orderDate', 'avgPrice' ]);
+ echo $view1->PrintTable(10);
 
-    echo '<div id="div2" style="display:none">' .  $view1->getHeadTable() . $view1->PrintTable(10) . '</div>';
-    
-
- echo $view::$countObject . ', ' . $view1::$countObject ;

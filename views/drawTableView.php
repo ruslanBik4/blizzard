@@ -6,7 +6,7 @@
  * Date: 13.08.16
  * Time: 10:23
  */
-class viewPayments
+class drawTableView
 {
     const TABLE_HEAD = '<table border="1"> <thead>';
     const END_HEAD   = '</thead>';
@@ -24,11 +24,13 @@ class viewPayments
 
     static public $countObject = 0;
     private $conn;
+    private $showDiv;
 
-    public function __construct($offset = 0)
+    public function __construct($offset = 0, $showDiv = '')
     {
         $this->conn = DBConnection::getConnection();
         $this->offset = $offset;
+        $this->showDiv = $showDiv;
 
         self::$countObject ++;
     }
@@ -75,7 +77,7 @@ class viewPayments
     public function runSQL()
     {
         if ($this->offset) {
-            $this->sql = $this->sql . " LIMIT " . (($this->offset-1) * 10) . ", 100" ;
+            $this->sql = $this->sql . " LIMIT " . ($this->offset * 10) . ", 100" ;
         }
 
         $this->result = $this->conn->runSQL($this->sql);
@@ -84,7 +86,7 @@ class viewPayments
     public function getHeadTable( )
     {
 
-        $text =  viewPayments::TABLE_HEAD . viewPayments::TABLE_ROW;
+        $text =  drawTableView::TABLE_HEAD . drawTableView::TABLE_ROW;
 
         $this->row = $this->conn->getRecords($this->result);
 
@@ -94,12 +96,12 @@ class viewPayments
                 if (in_array($key, $this->exclude)) {
                     continue;
                 }
-                $text .= viewPayments::TABLE_CELL . $key . viewPayments::END_CELL;
+                $text .= drawTableView::TABLE_CELL . $key . drawTableView::END_CELL;
             }
         } else {
             $text .= 'Not record';
         }
-        $text .=  viewPayments::END_ROW . viewPayments::END_HEAD;
+        $text .=  drawTableView::END_ROW . drawTableView::END_HEAD;
 
         return $text;
 
@@ -107,30 +109,39 @@ class viewPayments
 
     public function PrintTable($countRows)
     {
-        $text = '<div id="div1">' . $this->getHeadTable();
+        $text = '<div class="records" id="div' . $this->offset . '"'
+            . $this->showDiv . '>' . $this->getHeadTable();
+        $text .= $this->drawRecords($countRows);
+        $text .= drawTableView::TABLE_END  . '</div>';
+
+        return $text;
+    }
+
+    public function drawRecords($countRows)
+    {
+        $text = '';
         $count = 0;
 
         while ( ($this->row) && ($count < $countRows) )  {
-            $text .= viewPayments::TABLE_ROW;
+            $text .= drawTableView::TABLE_ROW;
 
              foreach ($this->row as $key => $value) {
 
                  if (in_array($key, $this->exclude)) {
                      continue;
                  }
-                 $text .= viewPayments::TABLE_CELL . $value . viewPayments::END_CELL;
+                 $text .= drawTableView::TABLE_CELL . $value . drawTableView::END_CELL;
              }
 
-            $text .= viewPayments::END_ROW . PHP_EOL;
+            $text .= drawTableView::END_ROW . PHP_EOL;
             $this->row = $this->conn->getRecords($this->result);
             $count++;
 
          }
 
-        $text .= viewPayments::TABLE_END  . '</div>';
-
-        return $text;
+         return $text;
     }
+
 
     /**
      * @param array $exclude
